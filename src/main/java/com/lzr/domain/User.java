@@ -1,4 +1,4 @@
-package com.lzr.utils;
+package com.lzr.domain;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

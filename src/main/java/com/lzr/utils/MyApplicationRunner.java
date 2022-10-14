@@ -1,6 +1,7 @@
 package com.lzr.utils;
 
 import com.lzr.annotation.Authority;
+import com.lzr.mapper.AuthMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -20,7 +21,8 @@ import java.util.Map;
 public class MyApplicationRunner implements ApplicationRunner {
     @Autowired
     WebApplicationContext applicationContext;
-
+    @Autowired
+    AuthMapper authMapper;
     @Override
     public void run(ApplicationArguments args) throws Exception {
         /**
@@ -40,7 +42,8 @@ public class MyApplicationRunner implements ApplicationRunner {
                 urlMap.put(role,url);
             }
         });
-        //@Todo 存入数据库
-        System.out.println(urlMap);
+        urlMap.forEach((k,v)->{
+            authMapper.addUrlRole(k.toString(),v.toString());
+        });
     }
 }

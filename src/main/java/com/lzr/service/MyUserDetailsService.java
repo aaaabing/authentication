@@ -25,10 +25,11 @@ public class MyUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority("admin"));
-        com.lzr.utils.User user= new com.lzr.utils.User();
+        authorities.add(new SimpleGrantedAuthority("/login"));
+        com.lzr.domain.User user= new com.lzr.domain.User();
         user.setPassWord("12");
         user.setUserName("12");
+
         UserDetails userDetails = new User(user.getUsername(), passwordEncoder.encode(user.getPassword()),authorities);
         return userDetails;
     }

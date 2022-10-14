@@ -1,11 +1,14 @@
 package com.lzr.config;
 
 
+import com.lzr.filter.PathAccessDecisionManager;
+import com.lzr.filter.RolePermissionMetadataSource;
 import com.lzr.filter.SecurityAuthenticationTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,6 +17,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
@@ -30,13 +34,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private SecurityAuthenticationTokenFilter securityAuthenticationTokenFilter;
-
+    @Autowired
+    private RolePermissionMetadataSource permissionMetadataSource;
+    @Autowired
+    private PathAccessDecisionManager pathAccessDecisionManager;
 
     /**
      * 白名单
      */
     private String[] white_url = {
-            "/test"
+            "/login"
     };
 
     @Override
@@ -45,11 +52,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // 禁用CSRF
                 .csrf().disable()
                 .exceptionHandling()
-                //认证失败处理
-                // 不创建session 使用token不需要session
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
                 // 放行白名单
@@ -57,9 +59,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // OPTIONS请求不验证
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 // 剩下所有请求都需要认证
-                .anyRequest().authenticated();
-
-        // 禁用缓存
+                .anyRequest().authenticated()
+                .accessDecisionManager(pathAccessDecisionManager)
+                .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
+                    @Override
+                    public <O extends FilterSecurityInterceptor> O postProcess(O o) {
+                        o.setSecurityMetadataSource(permissionMetadataSource);
+                        return o;
+                    }
+                });
+    // 禁用缓存
         http.headers().cacheControl();
         // 添加JWT filter
         http.addFilterBefore(securityAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
