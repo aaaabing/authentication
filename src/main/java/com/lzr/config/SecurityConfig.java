@@ -68,12 +68,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         return o;
                     }
                 });
-    // 禁用缓存
-        http.headers().cacheControl();
-        // 添加JWT filter
-        http.addFilterBefore(securityAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
-
-
     }
 
     @Override
