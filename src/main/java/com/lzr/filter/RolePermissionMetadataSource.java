@@ -5,14 +5,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
-import org.springframework.security.core.parameters.P;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 import org.springframework.stereotype.Component;
-
+import javax.annotation.PostConstruct;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+
+import static com.lzr.enums.SecurityCode.REFUSE;
+import static com.lzr.enums.SecurityCode.WHITE_REQUEST;
 
 /**
  * @author lzr
@@ -24,25 +26,34 @@ public class RolePermissionMetadataSource implements FilterInvocationSecurityMet
     RedisTemplate redisTemplate;
     @Autowired
     AuthMapper authMapper;
+
+    List<String> whiteUrl = new LinkedList<>();
+    @PostConstruct
+    public void init(){
+        whiteUrl.add("/login");
+    }
     @Override
     public Collection<ConfigAttribute> getAttributes(Object o) throws IllegalArgumentException {
         FilterInvocation filterInvocation = (FilterInvocation) o;
         //获取请求url
         String url = filterInvocation.getRequestUrl();
-        //@Todo 用redis获取
-//        String role = (String) redisTemplate.opsForValue().get(url);
-        //@Todo 此处测试
-        String role = "/login";
-        //去redis里获取url 对应路径
-        if(!role.isEmpty()){
-            String[] roles = role.split(",");
-            List<ConfigAttribute> configAttributes = new LinkedList<>();
-            for (String s : roles) {
-                configAttributes.add(new SecurityConfig(s));
+        //白名单直接放行 @Todo 应用正则判断
+        if (whiteUrl.contains(url)){
+            return SecurityConfig.createList(WHITE_REQUEST);
+        }else{
+            String role = (String) redisTemplate.opsForValue().get(url);
+            System.out.println(role);
+            //去redis里获取url 对应路径
+            if(role!=null&&!role.isEmpty()){
+                String[] roles = role.split(",");
+                List<ConfigAttribute> configAttributes = new LinkedList<>();
+                for (String s : roles) {
+                    configAttributes.add(new SecurityConfig(s));
             }
-            return configAttributes;
+                return configAttributes;
+            }
+            return SecurityConfig.createList(REFUSE);
         }
-        return SecurityConfig.createList("REFUSE");
     }
 
     @Override

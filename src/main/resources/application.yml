@@ -5,6 +5,11 @@ spring:
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
+  #  redis配置
+  redis:
+    host: 1.15.30.232
+    port: 6379
+    database: 0
 mybatis:
   # 搜索指定包别名
   typeAliasesPackage: com.lzr.**.domain

@@ -13,6 +13,6 @@ public class InitContainer {
 
     @PostConstruct
     public void init() {
-        //检测表是否存在
+        //检测表是否存在 @Todo 完成初始化工作
     }
 }

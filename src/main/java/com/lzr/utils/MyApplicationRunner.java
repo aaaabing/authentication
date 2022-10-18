@@ -5,6 +5,7 @@ import com.lzr.mapper.AuthMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.method.HandlerMethod;
@@ -23,6 +24,8 @@ public class MyApplicationRunner implements ApplicationRunner {
     WebApplicationContext applicationContext;
     @Autowired
     AuthMapper authMapper;
+    @Autowired
+    RedisTemplate redisTemplate;
     @Override
     public void run(ApplicationArguments args) throws Exception {
         /**
@@ -42,8 +45,11 @@ public class MyApplicationRunner implements ApplicationRunner {
                 urlMap.put(role,url);
             }
         });
+        //数据库和redis 各自保存一份
         urlMap.forEach((k,v)->{
             authMapper.addUrlRole(k.toString(),v.toString());
+            redisTemplate.opsForValue().set(v.toString().substring(1,v.toString().length()-1),k.toString());
+            System.out.println((v.toString().substring(1,v.toString().length()-1)));
         });
     }
 }

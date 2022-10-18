@@ -25,7 +25,7 @@ public class MyUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority("/login"));
+        authorities.add(new SimpleGrantedAuthority("user"));
         com.lzr.domain.User user= new com.lzr.domain.User();
         user.setPassWord("12");
         user.setUserName("12");

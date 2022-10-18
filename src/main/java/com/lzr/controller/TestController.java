@@ -1,4 +1,4 @@
-package com.lzr.utils;
+package com.lzr.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.lzr.annotation.Authority;
@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 
 @RestController
-public class Controller {
+public class TestController {
     @Autowired
     AuthenticationManager authenticationManager;
     @PostMapping("/login")
