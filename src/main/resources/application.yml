@@ -1,5 +1,5 @@
 spring:
-  #  数据库配置
+  #  mysql数据库配置
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/auth?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
     username: root
