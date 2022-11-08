@@ -1,8 +1,7 @@
 package com.lzr.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Repository;
+import org.apache.ibatis.annotations.Select;
 import java.util.List;
 
 /**
@@ -11,18 +10,19 @@ import java.util.List;
  */
 
 @Mapper
-@Repository
 public interface AuthMapper {
     /**
      * 获取所有角色
+     * @param  url 路径
      * @return roles
      */
-    List<String> getAllRoles();
+    @Select("select role from tb_user where url = #{url} ")
+    String getAllRoles(String url);
 
     /**
      * 添加权限
      * @param url 路径
      * @param role 角色
      */
-    void addUrlRole(@Param("url")String url,@Param("role")String role);
+//    void addUrlRole(@Param("url")String url,@Param("role")String role);
 }
