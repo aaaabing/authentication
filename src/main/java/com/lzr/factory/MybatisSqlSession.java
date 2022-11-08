@@ -42,9 +42,8 @@ public class MybatisSqlSession {
         Configuration configuration = new Configuration(environment);
         // 注册指定映射器
         configuration.addMapper(AuthMapper.class);
-        // 注册映射器类所在包名下的所有映射器
-        //configuration.addMappers("org.chench.test.mybatis.mapper.impl");
         SqlSessionFactory sqlSessionFactory = (SqlSessionFactory) new SqlSessionFactoryBuilder().build(configuration);
-        return sqlSessionFactory.openSession();
+        //不加事务增删改查事务不会自动提交
+        return sqlSessionFactory.openSession(true);
     }
 }

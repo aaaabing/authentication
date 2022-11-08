@@ -1,4 +1,4 @@
-package com.lzr.bean;
+package com.lzr.domain;
 
 /**
  * @author lzr

@@ -1,9 +1,6 @@
 package com.lzr.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.lzr.bean.AuthParam;
-import jdk.jfr.ContentType;
+import com.lzr.domain.AuthParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-public class TestController {
+public class AdminController {
     @Autowired
     AuthenticationManager authenticationManager;
     @PostMapping("/login")

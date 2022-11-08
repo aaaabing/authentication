@@ -1,7 +1,7 @@
 package com.lzr.mapper;
 
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
+
 import java.util.List;
 
 /**
@@ -16,7 +16,7 @@ public interface AuthMapper {
      * @param  url 路径
      * @return roles
      */
-    @Select("select role from tb_user where url = #{url} ")
+    @Select("select role from url_role where url = #{url} ")
     String getAllRoles(String url);
 
     /**
@@ -24,5 +24,30 @@ public interface AuthMapper {
      * @param url 路径
      * @param role 角色
      */
-//    void addUrlRole(@Param("url")String url,@Param("role")String role);
+    @Insert("insert into url_role(url,role) values(#{url},#{role})")
+    int addUrlRole(@Param("url")String url,@Param("role")String role);
+
+    /**
+     * 检查表
+     * @param tableSchema 库名
+     * @param tableName 表名
+     * @return 是否存在
+     */
+    @Select("  SELECT COUNT(1) FROM information_schema.tables WHERE\n" +
+            "        table_schema=#{tableSchema} AND table_name = #{tableName}")
+    int isExist(@Param("tableSchema") String tableSchema,@Param("tableName")String tableName);
+
+    /**
+     * 创建表
+     */
+    @Select("create table url_role( `url` varchar(150) NOT NULL,\n" +
+            "  `role` varchar(150) NOT NULL,\n" +
+            "  PRIMARY KEY (`url`, `role`))")
+    void createTable();
+
+    /**
+     * 清空表
+     */
+    @Delete("delete from url_role")
+    void clearTable();
 }
